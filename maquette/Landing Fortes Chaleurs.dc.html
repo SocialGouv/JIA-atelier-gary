@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @font-face { font-family: "Marianne"; src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Marianne"; src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Regular_Italic.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: "Marianne"; src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Medium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: "Marianne"; src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Bold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: "Marianne", arial, sans-serif; color: #161616; background: #ffffff; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+  </style>
+</helmet>
+
+<!-- ============ HEADER DSFR ============ -->
+<header data-screen-label="Header" style="background:#ffffff; box-shadow:0 1px 0 #dddddd">
+  <div style="max-width:1200px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; gap:32px; flex-wrap:wrap">
+    <div style="display:flex; flex-direction:column; gap:6px">
+      <p style="margin:0; font-weight:700; font-size:16px; line-height:1.05; text-transform:uppercase; color:#161616">République<br>Française</p>
+      <p style="margin:0; font-style:italic; font-size:10px; line-height:1.25; color:#161616">Liberté<br>Égalité<br>Fraternité</p>
+    </div>
+    <div style="flex:1; min-width:240px">
+      <p style="margin:0; font-weight:700; font-size:19px; line-height:1.3; color:#161616">Fortes chaleurs &amp; canicules</p>
+      <p style="margin:2px 0 0; font-size:13px; color:#666666">Comprendre son risque et agir — Ministère de la Santé</p>
+    </div>
+  </div>
+  <nav aria-label="Menu principal" style="border-top:1px solid #dddddd">
+    <div style="max-width:1200px; margin:0 auto; padding:0 12px; display:flex; flex-wrap:wrap">
+      <button onClick="{{ navToDiag }}" style="background:none; border:0; font-family:inherit; font-size:15px; color:#161616; padding:14px 14px; cursor:pointer" style-hover="background:#f6f6f6">Évaluer mon risque</button>
+      <button onClick="{{ navToGestes }}" style="background:none; border:0; font-family:inherit; font-size:15px; color:#161616; padding:14px 14px; cursor:pointer" style-hover="background:#f6f6f6">Les bons gestes</button>
+      <button onClick="{{ navToAidants }}" style="background:none; border:0; font-family:inherit; font-size:15px; color:#161616; padding:14px 14px; cursor:pointer" style-hover="background:#f6f6f6">Aidants &amp; professionnels</button>
+      <button onClick="{{ navToAlerte }}" style="background:none; border:0; font-family:inherit; font-size:15px; color:#161616; padding:14px 14px; cursor:pointer" style-hover="background:#f6f6f6">Alerte email</button>
+      <button onClick="{{ navToUrgences }}" style="background:none; border:0; font-family:inherit; font-size:15px; font-weight:700; color:#ce0500; padding:14px 14px; cursor:pointer" style-hover="background:#ffe9e9">Urgences</button>
+    </div>
+  </nav>
+</header>
+
+<!-- ============ BANDEAU DE VIGILANCE (niveau simulé) ============ -->
+<sc-if value="{{ vigIsJaune }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Bandeau vigilance" role="status" style="background:#fdf5cf; border-bottom:1px solid #e0c200">
+    <div style="max-width:1200px; margin:0 auto; padding:12px 24px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap">
+      <span style="background:#ffe552; color:#3d3100; font-weight:700; font-size:12px; letter-spacing:0.05em; padding:3px 10px; white-space:nowrap">VIGILANCE JAUNE</span>
+      <p style="margin:0; font-size:15px; line-height:1.5; flex:1; min-width:260px"><strong>Pic de chaleur attendu dans les prochains jours.</strong> Buvez régulièrement et évitez les efforts aux heures les plus chaudes.</p>
+      <p style="margin:0; font-size:12px; color:#666666">Mis à jour le 12 juin, 8 h · niveau simulé (maquette)</p>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{ vigIsOrange }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="Bandeau vigilance" role="status" style="background:#ffe9e6; border-bottom:1px solid #f4bfb1">
+    <div style="max-width:1200px; margin:0 auto; padding:12px 24px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap">
+      <span style="background:#b34000; color:#ffffff; font-weight:700; font-size:12px; letter-spacing:0.05em; padding:3px 10px; white-space:nowrap">VIGILANCE ORANGE</span>
+      <p style="margin:0; font-size:15px; line-height:1.5; flex:1; min-width:260px"><strong>Canicule en cours dans 14 départements.</strong> Limitez sorties et efforts entre 11 h et 17 h, buvez régulièrement, prenez des nouvelles des personnes fragiles.</p>
+      <p style="margin:0; font-size:12px; color:#666666">Mis à jour le 12 juin, 8 h · niveau simulé (maquette)</p>
+    </div>
+  </div>
+</sc-if>
+<sc-if value="{{ vigIsRouge }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Bandeau vigilance" role="alert" style="background:#ffe9e9; border-bottom:1px solid #f0b1b1">
+    <div style="max-width:1200px; margin:0 auto; padding:12px 24px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap">
+      <span style="background:#ce0500; color:#ffffff; font-weight:700; font-size:12px; letter-spacing:0.05em; padding:3px 10px; white-space:nowrap">VIGILANCE ROUGE</span>
+      <p style="margin:0; font-size:15px; line-height:1.5; flex:1; min-width:260px"><strong>Canicule extrême.</strong> Restez au frais, reportez tout effort et contactez les personnes isolées deux fois par jour.</p>
+      <p style="margin:0; font-size:12px; color:#666666">Mis à jour le 12 juin, 8 h · niveau simulé (maquette)</p>
+    </div>
+  </div>
+</sc-if>
+
+<!-- ============ HERO — variante "chaleur" ============ -->
+<sc-if value="{{ heroChaleur }}" hint-placeholder-val="{{ true }}">
+  <section data-screen-label="Hero" style="background:linear-gradient(180deg, #fff4eb 0%, #ffffff 100%)">
+    <div style="max-width:1200px; margin:0 auto; padding:64px 24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:48px; align-items:center">
+      <div>
+        <h1 style="margin:0 0 16px; font-size:42px; line-height:1.15; font-weight:700; text-wrap:pretty">Fortes chaleurs&nbsp;: évaluez votre risque en 2&nbsp;minutes</h1>
+        <p style="margin:0 0 28px; font-size:20px; line-height:1.5; color:#3a3a3a; text-wrap:pretty">Un test simple et anonyme pour savoir si vous — ou un proche — êtes vulnérable à la chaleur, et ce qu'il faut faire dès maintenant.</p>
+        <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center">
+          <button onClick="{{ startFromHero }}" style="display:inline-flex; align-items:center; background:#000091; color:#ffffff; border:0; padding:12px 24px; font-family:inherit; font-size:18px; font-weight:500; cursor:pointer" style-hover="background:#1212ff" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Évaluer ma vulnérabilité</button>
+          <button onClick="{{ navToGestes }}" style="display:inline-flex; align-items:center; background:transparent; color:#000091; border:0; box-shadow:inset 0 0 0 1px #000091; padding:12px 24px; font-family:inherit; font-size:18px; font-weight:500; cursor:pointer" style-hover="background:#f5f5fe" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Voir les bons gestes</button>
+        </div>
+        <p style="margin:16px 0 0; font-size:13px; color:#666666">Anonyme — aucune donnée ne quitte votre navigateur.</p>
+      </div>
+      <div style="background:#ffffff; border:1px solid #dddddd; padding:28px; display:flex; flex-direction:column; gap:20px">
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <span style="flex:none; width:36px; height:36px; border-radius:50%; background:#ececfe; color:#000091; font-weight:700; font-size:17px; display:flex; align-items:center; justify-content:center">1</span>
+          <div>
+            <p style="margin:0; font-weight:700; font-size:16px">Répondez à 6 questions</p>
+            <p style="margin:2px 0 0; font-size:14px; color:#666666">Pour vous, ou au nom d'un proche.</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <span style="flex:none; width:36px; height:36px; border-radius:50%; background:#ececfe; color:#000091; font-weight:700; font-size:17px; display:flex; align-items:center; justify-content:center">2</span>
+          <div>
+            <p style="margin:0; font-weight:700; font-size:16px">Obtenez un niveau de risque</p>
+            <p style="margin:2px 0 0; font-size:14px; color:#666666">Faible, modéré ou élevé — calculé sur votre appareil.</p>
+          </div>
+        </div>
+        <div style="display:flex; gap:16px; align-items:flex-start">
+          <span style="flex:none; width:36px; height:36px; border-radius:50%; background:#ececfe; color:#000091; font-weight:700; font-size:17px; display:flex; align-items:center; justify-content:center">3</span>
+          <div>
+            <p style="margin:0; font-weight:700; font-size:16px">Agissez avec des conseils adaptés</p>
+            <p style="margin:2px 0 0; font-size:14px; color:#666666">Des recommandations concrètes selon la situation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ HERO — variante "classique" ============ -->
+<sc-if value="{{ heroClassique }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Hero" style="background:#ffffff">
+    <div style="max-width:1200px; margin:0 auto; padding:64px 24px">
+      <div style="max-width:760px">
+        <h1 style="margin:0 0 16px; font-size:42px; line-height:1.15; font-weight:700; text-wrap:pretty">Fortes chaleurs&nbsp;: évaluez votre risque en 2&nbsp;minutes</h1>
+        <p style="margin:0 0 28px; font-size:20px; line-height:1.5; color:#3a3a3a; text-wrap:pretty">Un test simple et anonyme pour savoir si vous — ou un proche — êtes vulnérable à la chaleur, et ce qu'il faut faire dès maintenant.</p>
+        <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center">
+          <button onClick="{{ startFromHero }}" style="display:inline-flex; align-items:center; background:#000091; color:#ffffff; border:0; padding:12px 24px; font-family:inherit; font-size:18px; font-weight:500; cursor:pointer" style-hover="background:#1212ff" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Évaluer ma vulnérabilité</button>
+          <button onClick="{{ navToGestes }}" style="display:inline-flex; align-items:center; background:transparent; color:#000091; border:0; box-shadow:inset 0 0 0 1px #000091; padding:12px 24px; font-family:inherit; font-size:18px; font-weight:500; cursor:pointer" style-hover="background:#f5f5fe" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Voir les bons gestes</button>
+        </div>
+        <p style="margin:16px 0 0; font-size:13px; color:#666666">Anonyme — aucune donnée ne quitte votre navigateur.</p>
+      </div>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ HERO — variante "bleu" ============ -->
+<sc-if value="{{ heroBleu }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Hero" style="background:#f5f5fe">
+    <div style="max-width:760px; margin:0 auto; padding:72px 24px; text-align:center">
+      <h1 style="margin:0 0 16px; font-size:42px; line-height:1.15; font-weight:700; text-wrap:pretty">Fortes chaleurs&nbsp;: évaluez votre risque en 2&nbsp;minutes</h1>
+      <p style="margin:0 0 28px; font-size:20px; line-height:1.5; color:#3a3a3a; text-wrap:pretty">Un test simple et anonyme pour savoir si vous — ou un proche — êtes vulnérable à la chaleur, et ce qu'il faut faire dès maintenant.</p>
+      <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center; justify-content:center">
+        <button onClick="{{ startFromHero }}" style="display:inline-flex; align-items:center; background:#000091; color:#ffffff; border:0; padding:12px 24px; font-family:inherit; font-size:18px; font-weight:500; cursor:pointer" style-hover="background:#1212ff" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Évaluer ma vulnérabilité</button>
+        <button onClick="{{ navToGestes }}" style="display:inline-flex; align-items:center; background:transparent; color:#000091; border:0; box-shadow:inset 0 0 0 1px #000091; padding:12px 24px; font-family:inherit; font-size:18px; font-weight:500; cursor:pointer" style-hover="background:#f5f5fe" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Voir les bons gestes</button>
+      </div>
+      <p style="margin:16px 0 0; font-size:13px; color:#666666">Anonyme — aucune donnée ne quitte votre navigateur.</p>
+    </div>
+  </section>
+</sc-if>
+
+<!-- ============ AUTO-DIAGNOSTIC ============ -->
+<section data-screen-label="Auto-diagnostic" ref="{{ diagRef }}" style="background:#f6f6f6; border-top:1px solid #dddddd">
+  <div style="max-width:760px; margin:0 auto; padding:56px 24px">
+    <p style="margin:0 0 8px; font-size:13px; font-weight:700; color:#000091; text-transform:uppercase; letter-spacing:0.06em">Auto-diagnostic</p>
+    <h2 style="margin:0 0 8px; font-size:30px; line-height:1.2; font-weight:700; text-wrap:pretty">Êtes-vous vulnérable aux fortes chaleurs&nbsp;?</h2>
+    <p style="margin:0 0 28px; font-size:16px; line-height:1.5; color:#3a3a3a">Vos réponses restent dans votre navigateur&nbsp;: rien n'est transmis ni stocké.</p>
+
+    <div style="background:#ffffff; border:1px solid #dddddd; padding:32px">
+      <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; gap:20px">
+          <p style="margin:0; font-size:17px; line-height:1.5">Quelques questions sur l'âge, le logement, la santé et le quotidien suffisent à estimer un niveau de risque — pour vous-même ou pour une personne dont vous vous occupez.</p>
+          <div style="display:flex; gap:20px; flex-wrap:wrap; font-size:14px; color:#666666">
+            <span>6 questions</span>
+            <span>·</span>
+            <span>≈ 2 minutes</span>
+            <span>·</span>
+            <span>100 % anonyme</span>
+          </div>
+          <div>
+            <button onClick="{{ beginTest }}" style="display:inline-flex; align-items:center; background:#000091; color:#ffffff; border:0; padding:12px 24px; font-family:inherit; font-size:17px; font-weight:500; cursor:pointer" style-hover="background:#1212ff" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Commencer le test</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showStepper }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:20px">
+          <div style="display:flex; gap:6px" aria-hidden="true">
+            <sc-for list="{{ segments }}" as="seg" hint-placeholder-count="6">
+              <div style="flex:1; height:6px; background:{{ seg.color }}"></div>
+            </sc-for>
+          </div>
+          <p style="margin:0; font-size:13px; color:#666666">{{ stepLabel }}</p>
+          <h3 style="margin:0; font-size:23px; line-height:1.3; font-weight:700; text-wrap:pretty">{{ questionTitle }}</h3>
+          <sc-if value="{{ hasQuestionSubtitle }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:-8px 0 0; font-size:15px; line-height:1.5; color:#666666">{{ questionSubtitle }}</p>
+          </sc-if>
+          <div style="display:flex; flex-direction:column; gap:12px">
+            <sc-for list="{{ currentOptions }}" as="opt" hint-placeholder-count="3">
+              <button onClick="{{ opt.onClick }}" style="display:block; width:100%; text-align:left; background:#ffffff; border:1px solid #dddddd; padding:16px 20px; font-family:inherit; cursor:pointer" style-hover="border-color:#000091; background:#f5f5fe" style-focus="outline:2px solid #0a76f6; outline-offset:2px">
+                <span style="display:block; font-size:16px; font-weight:500; color:#161616">{{ opt.label }}</span>
+                <sc-if value="{{ opt.hasHint }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:block; margin-top:4px; font-size:13px; line-height:1.4; color:#666666">{{ opt.hint }}</span>
+                </sc-if>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ canGoBack }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <button onClick="{{ goBack }}" style="background:none; border:0; font-family:inherit; font-size:14px; color:#000091; padding:4px 0; cursor:pointer; text-decoration:underline; text-underline-offset:3px" style-hover="color:#1212ff">← Question précédente</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showResult }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; flex-direction:column; gap:20px">
+          <div>
+            <span style="display:inline-block; background:{{ resultBg }}; color:{{ resultColor }}; font-weight:700; font-size:15px; padding:6px 14px">{{ resultTitle }}</span>
+          </div>
+          <p style="margin:0; font-size:16px; line-height:1.5">{{ resultDesc }}</p>
+          <div>
+            <h4 style="margin:0 0 12px; font-size:18px; font-weight:700">{{ recosTitle }}</h4>
+            <div style="display:flex; flex-direction:column">
+              <sc-for list="{{ recos }}" as="reco" hint-placeholder-count="3">
+                <div style="display:flex; gap:12px; padding:14px 0; border-top:1px solid #eeeeee">
+                  <span style="flex:none; width:8px; height:8px; margin-top:7px; background:#000091"></span>
+                  <p style="margin:0; font-size:15px; line-height:1.5"><strong>{{ reco.strong }}</strong> {{ reco.text }}</p>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center; border-top:1px solid #eeeeee; padding-top:20px">
+            <button onClick="{{ navToAlerte }}" style="display:inline-flex; align-items:center; background:#000091; color:#ffffff; border:0; padding:10px 20px; font-family:inherit; font-size:16px; font-weight:500; cursor:pointer" style-hover="background:#1212ff" style-focus="outline:2px solid #0a76f6; outline-offset:2px">M'inscrire à l'alerte canicule</button>
+            <button onClick="{{ restartTest }}" style="display:inline-flex; align-items:center; background:transparent; color:#000091; border:0; box-shadow:inset 0 0 0 1px #000091; padding:10px 20px; font-family:inherit; font-size:16px; font-weight:500; cursor:pointer" style-hover="background:#f5f5fe" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Refaire le test pour un autre profil</button>
+          </div>
+          <p style="margin:0; font-size:12px; color:#666666; font-style:italic">Barème indicatif — à valider médicalement avant mise en ligne (cf. spec §10).</p>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GESTES DE PRÉVENTION ============ -->
+<section data-screen-label="Gestes de prévention" ref="{{ gestesRef }}" style="background:#ffffff">
+  <div style="max-width:1200px; margin:0 auto; padding:56px 24px">
+    <p style="margin:0 0 8px; font-size:13px; font-weight:700; color:#000091; text-transform:uppercase; letter-spacing:0.06em">Prévention</p>
+    <h2 style="margin:0 0 8px; font-size:30px; line-height:1.2; font-weight:700">Les bons gestes, selon votre situation</h2>
+    <p style="margin:0 0 32px; font-size:16px; line-height:1.5; color:#3a3a3a; max-width:720px">Pas de liste générique&nbsp;: choisissez ce qui correspond à votre quotidien.</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:24px">
+      <div style="background:#ffffff; border:1px solid #dddddd; border-bottom:4px solid #000091; padding:24px; display:flex; flex-direction:column; gap:12px">
+        <h3 style="margin:0; font-size:19px; font-weight:700">Dans le logement</h3>
+        <ul style="margin:0; padding-left:18px; display:flex; flex-direction:column; gap:8px; font-size:15px; line-height:1.45; color:#3a3a3a">
+          <li>Fermer volets et fenêtres aux heures chaudes, aérer la nuit</li>
+          <li>Repérer la pièce la plus fraîche pour y dormir</li>
+          <li>Se mouiller le corps plusieurs fois par jour (gant, brumisateur)</li>
+          <li>Limiter les appareils qui chauffent (four, plaques)</li>
+        </ul>
+      </div>
+      <div style="background:#ffffff; border:1px solid #dddddd; border-bottom:4px solid #000091; padding:24px; display:flex; flex-direction:column; gap:12px">
+        <h3 style="margin:0; font-size:19px; font-weight:700">Au travail</h3>
+        <ul style="margin:0; padding-left:18px; display:flex; flex-direction:column; gap:8px; font-size:15px; line-height:1.45; color:#3a3a3a">
+          <li>Décaler les tâches pénibles avant 11&nbsp;h ou après 17&nbsp;h</li>
+          <li>Boire un verre d'eau toutes les 15 à 20 minutes</li>
+          <li>Surveiller ses collègues&nbsp;: crampes, confusion = alerte</li>
+          <li>L'employeur doit fournir de l'eau fraîche et adapter les horaires (Code du travail)</li>
+        </ul>
+      </div>
+      <div style="background:#ffffff; border:1px solid #dddddd; border-bottom:4px solid #000091; padding:24px; display:flex; flex-direction:column; gap:12px">
+        <h3 style="margin:0; font-size:19px; font-weight:700">Avec des enfants</h3>
+        <ul style="margin:0; padding-left:18px; display:flex; flex-direction:column; gap:8px; font-size:15px; line-height:1.45; color:#3a3a3a">
+          <li>Jamais seuls dans une voiture, même quelques minutes</li>
+          <li>Sorties avant 11&nbsp;h ou après 17&nbsp;h, chapeau et ombre</li>
+          <li>Proposer à boire très régulièrement, sans attendre la soif</li>
+          <li>Repas froids, fruits gorgés d'eau</li>
+        </ul>
+      </div>
+      <div style="background:#ffffff; border:1px solid #dddddd; border-bottom:4px solid #000091; padding:24px; display:flex; flex-direction:column; gap:12px">
+        <h3 style="margin:0; font-size:19px; font-weight:700">Personnes âgées</h3>
+        <ul style="margin:0; padding-left:18px; display:flex; flex-direction:column; gap:8px; font-size:15px; line-height:1.45; color:#3a3a3a">
+          <li>Prendre des nouvelles deux fois par jour</li>
+          <li>Passer 2 à 3 heures par jour dans un lieu frais</li>
+          <li>Boire environ 1,5&nbsp;L d'eau et continuer à manger normalement</li>
+          <li>S'inscrire au registre canicule de la mairie</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AIDANTS & PROFESSIONNELS ============ -->
+<section data-screen-label="Aidants et professionnels" ref="{{ aidantsRef }}" style="background:#f5f5fe">
+  <div style="max-width:1200px; margin:0 auto; padding:56px 24px">
+    <p style="margin:0 0 8px; font-size:13px; font-weight:700; color:#000091; text-transform:uppercase; letter-spacing:0.06em">Aidants &amp; professionnels</p>
+    <h2 style="margin:0 0 32px; font-size:30px; line-height:1.2; font-weight:700">Vous veillez sur quelqu'un&nbsp;?</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:32px; align-items:start">
+      <div style="display:flex; flex-direction:column; gap:20px">
+        <p style="margin:0; font-size:16px; line-height:1.5; color:#3a3a3a; text-wrap:pretty">Aidant familial, auxiliaire de vie, voisin attentif&nbsp;: vous êtes le relais le plus efficace auprès des personnes qui ne consulteront jamais ce site. Le test de vulnérabilité peut se faire <strong>au nom d'un proche</strong> — un résultat objectif aide souvent à convaincre.</p>
+        <div style="background:#ffffff; border:1px solid #dddddd; padding:24px">
+          <h3 style="margin:0 0 16px; font-size:18px; font-weight:700">La checklist de l'aidant</h3>
+          <ul style="margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px">
+            <li style="display:flex; gap:10px; font-size:15px; line-height:1.45"><span style="flex:none; color:#18753c; font-weight:700">✓</span><span>J'ai fait le test de vulnérabilité pour chaque personne dont je m'occupe</span></li>
+            <li style="display:flex; gap:10px; font-size:15px; line-height:1.45"><span style="flex:none; color:#18753c; font-weight:700">✓</span><span>Je connais la pièce la plus fraîche de son logement</span></li>
+            <li style="display:flex; gap:10px; font-size:15px; line-height:1.45"><span style="flex:none; color:#18753c; font-weight:700">✓</span><span>Son inscription au registre canicule de la mairie est à jour</span></li>
+            <li style="display:flex; gap:10px; font-size:15px; line-height:1.45"><span style="flex:none; color:#18753c; font-weight:700">✓</span><span>J'ai prévu qui appelle qui en cas d'alerte</span></li>
+            <li style="display:flex; gap:10px; font-size:15px; line-height:1.45"><span style="flex:none; color:#18753c; font-weight:700">✓</span><span>Je connais les signes du coup de chaleur</span></li>
+          </ul>
+        </div>
+        <div>
+          <button onClick="{{ startForProche }}" style="display:inline-flex; align-items:center; background:#000091; color:#ffffff; border:0; padding:12px 24px; font-family:inherit; font-size:16px; font-weight:500; cursor:pointer" style-hover="background:#1212ff" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Faire le test pour un proche</button>
+        </div>
+      </div>
+      <div style="background:#ffffff; border:1px solid #dddddd; border-top:4px solid #ce0500; padding:24px">
+        <h3 style="margin:0 0 4px; font-size:18px; font-weight:700">Fiche réflexe — malaise ou coup de chaleur</h3>
+        <p style="margin:0 0 20px; font-size:13px; color:#666666">À imprimer et afficher chez la personne aidée.</p>
+        <ol style="margin:0 0 20px; padding:0; list-style:none; display:flex; flex-direction:column; gap:14px">
+          <li style="display:flex; gap:14px; align-items:flex-start">
+            <span style="flex:none; width:30px; height:30px; border-radius:50%; background:#ffe9e9; color:#ce0500; font-weight:700; font-size:15px; display:flex; align-items:center; justify-content:center">1</span>
+            <p style="margin:0; font-size:15px; line-height:1.45"><strong>Mettre la personne au frais</strong>, à l'ombre, jambes légèrement surélevées.</p>
+          </li>
+          <li style="display:flex; gap:14px; align-items:flex-start">
+            <span style="flex:none; width:30px; height:30px; border-radius:50%; background:#ffe9e9; color:#ce0500; font-weight:700; font-size:15px; display:flex; align-items:center; justify-content:center">2</span>
+            <p style="margin:0; font-size:15px; line-height:1.45"><strong>Rafraîchir</strong>&nbsp;: eau sur le visage et le corps, ventiler, retirer les couches de vêtements.</p>
+          </li>
+          <li style="display:flex; gap:14px; align-items:flex-start">
+            <span style="flex:none; width:30px; height:30px; border-radius:50%; background:#ffe9e9; color:#ce0500; font-weight:700; font-size:15px; display:flex; align-items:center; justify-content:center">3</span>
+            <p style="margin:0; font-size:15px; line-height:1.45"><strong>Faire boire de l'eau fraîche</strong> par petites gorgées, si la personne est consciente.</p>
+          </li>
+          <li style="display:flex; gap:14px; align-items:flex-start">
+            <span style="flex:none; width:30px; height:30px; border-radius:50%; background:#ce0500; color:#ffffff; font-weight:700; font-size:15px; display:flex; align-items:center; justify-content:center">4</span>
+            <p style="margin:0; font-size:15px; line-height:1.45"><strong>Appeler le 15</strong> si&nbsp;: confusion, perte de connaissance, fièvre &gt; 39&nbsp;°C, propos incohérents.</p>
+          </li>
+        </ol>
+        <button onClick="{{ printFiche }}" style="display:inline-flex; align-items:center; background:transparent; color:#000091; border:0; box-shadow:inset 0 0 0 1px #000091; padding:10px 20px; font-family:inherit; font-size:15px; font-weight:500; cursor:pointer" style-hover="background:#f5f5fe" style-focus="outline:2px solid #0a76f6; outline-offset:2px">Imprimer la fiche</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ALERTE EMAIL ============ -->
+<section data-screen-label="Alerte email" ref="{{ alerteRef }}" style="background:#ffffff; border-top:1px solid #dddddd">
+  <div style="max-width:760px; margin:0 auto; padding:56px 24px">
+    <p style="margin:0 0 8px; font-size:13px; font-weight:700; color:#000091; text-transform:uppercase; letter-spacing:0.06em">Alerte canicule</p>
+    <h2 style="margin:0 0 8px; font-size:30px; line-height:1.2; font-weight:700">Soyez prévenu·e avant le prochain épisode</h2>
+    <p style="margin:0 0 28px; font-size:16px; line-height:1.5; color:#3a3a3a">Recevez un email lorsque votre commune passe en vigilance canicule, avec les consignes du moment.</p>
+
+    <sc-if value="{{ notSubscribed }}" hint-placeholder-val="{{ true }}">
+      <form onSubmit="{{ submitAlert }}" noValidate="{{ true }}" style="background:#f6f6f6; padding:32px; display:flex; flex-direction:column; gap:24px">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:24px">
+          <div style="display:flex; flex-direction:column; gap:8px">
+            <label for="alerte-email" style="font-size:15px; font-weight:500">Adresse email</label>
+            <input id="alerte-email" type="email" autoComplete="email" value="{{ email }}" onChange="{{ onEmailChange }}" onKeyDown="{{ onFieldKeyDown }}" style="width:100%; padding:10px 16px; font-size:16px; font-family:inherit; color:#161616; background:#eeeeee; border:0; border-bottom:2px solid {{ emailBorder }}; border-radius:4px 4px 0 0" style-focus="outline:2px solid #0a76f6; outline-offset:2px">
+            <sc-if value="{{ hasEmailErr }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0; font-size:13px; color:#ce0500">{{ emailErr }}</p>
+            </sc-if>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px">
+            <label for="alerte-commune" style="font-size:15px; font-weight:500">Commune</label>
+            <input id="alerte-commune" type="text" autoComplete="address-level2" placeholder="Ex. : Nîmes" value="{{ commune }}" onChange="{{ onCommuneChange }}" onKeyDown="{{ onFieldKeyDown }}" style="width:100%; padding:10px 16px; font-size:16px; font-family:inherit; color:#161616; background:#eeeeee; border:0; border-bottom:2px solid {{ communeBorder }}; border-radius:4px 4px 0 0" style-focus="outline:2px solid #0a76f6; outline-offset:2px">
+            <sc-if value="{{ hasCommuneErr }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0; font-size:13px; color:#ce0500">{{ communeErr }}</p>
+            </sc-if>
+          </div>
+        </div>
+        <div>
+          <button type="button" onClick="{{ submitAlert }}" style="display:inline-flex; align-items:center; background:#000091; color:#ffffff; border:0; padding:12px 24px; font-family:inherit; font-size:16px; font-weight:500; cursor:pointer" style-hover="background:#1212ff" style-focus="outline:2px solid #0a76f6; outline-offset:2px">M'inscrire à l'alerte</button>
+        </div>
+        <p style="margin:0; font-size:12px; line-height:1.5; color:#666666">Votre email et votre commune servent uniquement à l'envoi de l'alerte canicule. Vous pourrez vous désinscrire à tout moment. <em>Maquette&nbsp;: aucune donnée n'est envoyée ni conservée.</em></p>
+      </form>
+    </sc-if>
+    <sc-if value="{{ subscribed }}" hint-placeholder-val="{{ false }}">
+      <div role="status" style="display:flex; background:#ffffff; border:1px solid #dddddd">
+        <div style="flex:none; width:44px; background:#18753c; display:flex; align-items:flex-start; justify-content:center; padding-top:18px; color:#ffffff; font-weight:700; font-size:18px">✓</div>
+        <div style="padding:18px 20px">
+          <p style="margin:0 0 4px; font-weight:700; font-size:16px">Inscription enregistrée</p>
+          <p style="margin:0; font-size:15px; line-height:1.5; color:#3a3a3a">Vous recevrez un email avant le prochain épisode de forte chaleur dans votre commune. <em style="color:#666666">(Maquette&nbsp;: aucun envoi réel.)</em></p>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<!-- ============ BIENTÔT DISPONIBLE ============ -->
+<section data-screen-label="Bientôt disponible" style="background:#f6f6f6; border-top:1px solid #dddddd">
+  <div style="max-width:1200px; margin:0 auto; padding:56px 24px">
+    <h2 style="margin:0 0 8px; font-size:30px; line-height:1.2; font-weight:700">Bientôt sur ce site</h2>
+    <p style="margin:0 0 32px; font-size:16px; line-height:1.5; color:#3a3a3a; max-width:720px">Vous nous l'avez demandé en priorité&nbsp;: l'information locale arrive dans une prochaine version.</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:24px">
+      <div style="background:#ffffff; border:1px dashed #bbbbbb; padding:24px; display:flex; flex-direction:column; gap:12px">
+        <div><span style="display:inline-block; background:#e8edff; color:#0063cb; font-weight:700; font-size:12px; letter-spacing:0.04em; padding:3px 10px">À VENIR</span></div>
+        <h3 style="margin:0; font-size:19px; font-weight:700">Les lieux frais près de chez vous</h3>
+        <p style="margin:0; font-size:15px; line-height:1.5; color:#3a3a3a">Parcs, bibliothèques, salles rafraîchies&nbsp;: un annuaire géolocalisé construit avec les collectivités.</p>
+      </div>
+      <div style="background:#ffffff; border:1px dashed #bbbbbb; padding:24px; display:flex; flex-direction:column; gap:12px">
+        <div><span style="display:inline-block; background:#e8edff; color:#0063cb; font-weight:700; font-size:12px; letter-spacing:0.04em; padding:3px 10px">À VENIR</span></div>
+        <h3 style="margin:0; font-size:19px; font-weight:700">Carte de vigilance en temps réel</h3>
+        <p style="margin:0; font-size:15px; line-height:1.5; color:#3a3a3a">Le niveau d'alerte de votre département, mis à jour en continu avec les données Météo-France.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ URGENCES ============ -->
+<section data-screen-label="Urgences" ref="{{ urgencesRef }}" style="background:#000091; color:#ffffff">
+  <div style="max-width:1200px; margin:0 auto; padding:48px 24px">
+    <h2 style="margin:0 0 24px; font-size:26px; line-height:1.2; font-weight:700">En cas d'urgence</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:32px">
+      <div style="display:flex; flex-direction:column; gap:4px">
+        <a href="tel:15" style="color:#ffffff; text-decoration:none; font-size:44px; font-weight:700; line-height:1">15</a>
+        <p style="margin:6px 0 0; font-weight:700; font-size:16px">SAMU</p>
+        <p style="margin:0; font-size:14px; color:#cacafb">Malaise, coup de chaleur, perte de connaissance.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px">
+        <a href="tel:115" style="color:#ffffff; text-decoration:none; font-size:44px; font-weight:700; line-height:1">115</a>
+        <p style="margin:6px 0 0; font-weight:700; font-size:16px">Urgence sociale</p>
+        <p style="margin:0; font-size:14px; color:#cacafb">Pour signaler une personne sans abri en difficulté.</p>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:4px">
+        <a href="tel:0800066666" style="color:#ffffff; text-decoration:none; font-size:30px; font-weight:700; line-height:1.2">0 800 06 66 66</a>
+        <p style="margin:6px 0 0; font-weight:700; font-size:16px">Canicule info service</p>
+        <p style="margin:0; font-size:14px; color:#cacafb">Gratuit, tous les jours de 9 h à 19 h en période d'alerte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER DSFR ============ -->
+<footer data-screen-label="Footer" style="background:#ffffff; border-top:2px solid #000091">
+  <div style="max-width:1200px; margin:0 auto; padding:32px 24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:32px">
+    <div style="display:flex; gap:24px; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; gap:6px">
+        <p style="margin:0; font-weight:700; font-size:15px; line-height:1.05; text-transform:uppercase; color:#161616">République<br>Française</p>
+        <p style="margin:0; font-style:italic; font-size:9px; line-height:1.25; color:#161616">Liberté<br>Égalité<br>Fraternité</p>
+      </div>
+    </div>
+    <div>
+      <p style="margin:0 0 16px; font-size:14px; line-height:1.5; color:#3a3a3a">Fortes chaleurs &amp; canicules — un service public de prévention édité par le ministère de la Santé. Maquette d'atelier&nbsp;: les niveaux de vigilance sont simulés.</p>
+      <div style="display:flex; gap:20px; flex-wrap:wrap">
+        <a href="https://legifrance.gouv.fr" style="font-size:14px; font-weight:700; color:#161616; text-decoration:none" style-hover="text-decoration:underline">legifrance.gouv.fr</a>
+        <a href="https://info.gouv.fr" style="font-size:14px; font-weight:700; color:#161616; text-decoration:none" style-hover="text-decoration:underline">info.gouv.fr</a>
+        <a href="https://service-public.fr" style="font-size:14px; font-weight:700; color:#161616; text-decoration:none" style-hover="text-decoration:underline">service-public.fr</a>
+        <a href="https://data.gouv.fr" style="font-size:14px; font-weight:700; color:#161616; text-decoration:none" style-hover="text-decoration:underline">data.gouv.fr</a>
+      </div>
+    </div>
+  </div>
+  <div style="border-top:1px solid #dddddd">
+    <div style="max-width:1200px; margin:0 auto; padding:16px 24px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; font-size:12px; color:#666666">
+      <a href="#" style="color:#666666; text-decoration:none" style-hover="text-decoration:underline">Accessibilité&nbsp;: partiellement conforme</a>
+      <span aria-hidden="true">·</span>
+      <a href="#" style="color:#666666; text-decoration:none" style-hover="text-decoration:underline">Mentions légales</a>
+      <span aria-hidden="true">·</span>
+      <a href="#" style="color:#666666; text-decoration:none" style-hover="text-decoration:underline">Données personnelles</a>
+      <span aria-hidden="true">·</span>
+      <a href="#" style="color:#666666; text-decoration:none" style-hover="text-decoration:underline">Gestion des cookies</a>
+      <span style="flex:1"></span>
+      <span>Sauf mention contraire, tous les contenus de ce site sont sous <a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" style="color:#666666">licence etalab-2.0</a></span>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;heroVariant&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;chaleur&quot;, &quot;classique&quot;, &quot;bleu&quot;], &quot;default&quot;: &quot;chaleur&quot;, &quot;tsType&quot;: &quot;\&quot;chaleur\&quot; | \&quot;classique\&quot; | \&quot;bleu\&quot;&quot; },
+  &quot;vigilance&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;jaune&quot;, &quot;orange&quot;, &quot;rouge&quot;], &quot;default&quot;: &quot;orange&quot;, &quot;tsType&quot;: &quot;\&quot;jaune\&quot; | \&quot;orange\&quot; | \&quot;rouge\&quot;&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    started: false,
+    forWhom: null,
+    step: 0,
+    answers: [],
+    email: "",
+    commune: "",
+    emailErr: "",
+    communeErr: "",
+    subscribed: false
+  };
+
+  diagRef = React.createRef();
+  gestesRef = React.createRef();
+  aidantsRef = React.createRef();
+  alerteRef = React.createRef();
+  urgencesRef = React.createRef();
+
+  scrollToRef(ref) {
+    const el = ref && ref.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 8;
+    window.scrollTo({ top, behavior: "smooth" });
+  }
+
+  get QUESTIONS() {
+    const other = this.state.forWhom === "proche";
+    return [
+      {
+        id: "age",
+        title: other ? "Quel âge a cette personne ?" : "Quel âge avez-vous ?",
+        options: [
+          { label: "Moins de 65 ans", pts: 0 },
+          { label: "65 à 74 ans", pts: 2 },
+          { label: "75 ans ou plus", pts: 3 }
+        ]
+      },
+      {
+        id: "logement",
+        title: other ? "Comment est son logement en été ?" : "Comment est votre logement en été ?",
+        options: [
+          { label: "Plutôt frais, ou climatisé", pts: 0 },
+          { label: "Chaud aux heures de pointe, sans climatisation", hint: "Exposition sud, étage élevé, peu d'ombre…", pts: 2 },
+          { label: "Très chaud, presque impossible à rafraîchir", pts: 3 }
+        ]
+      },
+      {
+        id: "sante",
+        title: other
+          ? "Cette personne a-t-elle une maladie chronique ou un traitement régulier ?"
+          : "Avez-vous une maladie chronique ou un traitement régulier ?",
+        options: [
+          { label: "Non", pts: 0 },
+          { label: "Oui", hint: "Maladie cardiaque, respiratoire, rénale, diabète, traitements diurétiques ou psychotropes…", pts: 2 },
+          { label: "Je ne sais pas", pts: 1 }
+        ]
+      },
+      {
+        id: "activite",
+        title: other
+          ? "Passe-t-elle de longues heures dehors ou à l'effort ?"
+          : "Passez-vous de longues heures dehors ou à l'effort ?",
+        options: [
+          { label: "Non, l'essentiel se passe en intérieur", pts: 0 },
+          { label: "Oui, quelques heures par jour", pts: 1 },
+          { label: "Oui, la majeure partie de la journée", hint: "Chantier, agriculture, livraison, sport intensif…", pts: 2 }
+        ]
+      },
+      {
+        id: "entourage",
+        title: other ? "Cette personne vit-elle seule ?" : "Vivez-vous seul·e ?",
+        options: [
+          { label: "Non, ou entouré·e au quotidien", pts: 0 },
+          { label: "Oui, avec des visites régulières", pts: 1 },
+          { label: "Oui, avec peu de visites", pts: 2 }
+        ]
+      }
+    ];
+  }
+
+  get RECO_MAP() {
+    return {
+      age: {
+        1: [{ strong: "Boire régulièrement sans attendre la soif,", text: "et continuer à manger normalement, même sans appétit." }],
+        2: [
+          { strong: "Boire régulièrement sans attendre la soif,", text: "et continuer à manger normalement, même sans appétit." },
+          { strong: "Passer 2 à 3 heures par jour dans un endroit frais", text: "(mairie, bibliothèque, supermarché) en période d'alerte." }
+        ]
+      },
+      logement: {
+        1: [{ strong: "Fermer volets et fenêtres le jour, aérer la nuit,", text: "et dormir dans la pièce la plus fraîche du logement." }],
+        2: [
+          { strong: "Fermer volets et fenêtres le jour, aérer la nuit,", text: "et dormir dans la pièce la plus fraîche du logement." },
+          { strong: "Identifier dès maintenant un lieu frais accessible :", text: "la mairie peut orienter via le registre canicule." }
+        ]
+      },
+      sante: {
+        1: [{ strong: "Demander conseil au médecin ou au pharmacien :", text: "certains traitements doivent être adaptés en période de forte chaleur." }],
+        2: [{ strong: "Faire le point avec un professionnel de santé", text: "pour savoir si un traitement ou une condition augmente le risque." }]
+      },
+      activite: {
+        1: [{ strong: "Décaler les efforts avant 11 h ou après 17 h,", text: "avec une pause à l'ombre et un verre d'eau toutes les 15-20 minutes." }],
+        2: [
+          { strong: "Décaler les efforts avant 11 h ou après 17 h,", text: "avec une pause à l'ombre et un verre d'eau toutes les 15-20 minutes." },
+          { strong: "Connaître ses droits au travail :", text: "l'employeur doit fournir de l'eau fraîche et adapter les horaires (Code du travail)." }
+        ]
+      },
+      entourage: {
+        1: [{ strong: "S'inscrire au registre canicule de la mairie", text: "pour être contacté·e en cas d'alerte." }],
+        2: [
+          { strong: "S'inscrire au registre canicule de la mairie", text: "pour être contacté·e en cas d'alerte." },
+          { strong: "Convenir d'un appel quotidien avec un proche", text: "pendant toute la durée des épisodes de chaleur." }
+        ]
+      }
+    };
+  }
+
+  get GENERIC_RECOS() {
+    return [
+      { strong: "Boire de l'eau régulièrement,", text: "sans attendre d'avoir soif, et limiter alcool et café." },
+      { strong: "Garder le logement frais :", text: "volets fermés le jour, aération la nuit." },
+      { strong: "Connaître les signes d'alerte :", text: "crampes, confusion, nausées — appeler le 15 en cas de doute." }
+    ];
+  }
+
+  computeResult() {
+    const qs = this.QUESTIONS;
+    const answers = this.state.answers;
+    let pts = 0;
+    let recos = [];
+    qs.forEach((q, i) => {
+      const idx = answers[i];
+      if (idx == null) return;
+      pts += q.options[idx].pts;
+      const extra = (this.RECO_MAP[q.id] || {})[idx];
+      if (extra) recos = recos.concat(extra);
+    });
+    const seen = new Set();
+    recos = recos.filter((r) => (seen.has(r.strong) ? false : (seen.add(r.strong), true)));
+    for (const g of this.GENERIC_RECOS) {
+      if (recos.length >= 3) break;
+      if (!seen.has(g.strong)) { recos.push(g); seen.add(g.strong); }
+    }
+    recos = recos.slice(0, 5);
+    const level = pts >= 6 ? "eleve" : pts >= 3 ? "modere" : "faible";
+    return { level, recos };
+  }
+
+  renderVals() {
+    const heroVariant = this.props.heroVariant ?? "chaleur";
+    const vigilance = this.props.vigilance ?? "orange";
+    const s = this.state;
+    const other = s.forWhom === "proche";
+
+    const showIntro = !s.started;
+    const showResult = s.started && s.step === 6;
+    const showStepper = s.started && !showResult;
+
+    let questionTitle = "";
+    let questionSubtitle = "";
+    let currentOptions = [];
+
+    if (showStepper) {
+      if (s.step === 0) {
+        questionTitle = "Pour qui faites-vous ce test ?";
+        questionSubtitle = "Vous pouvez répondre pour vous-même ou au nom d'une personne dont vous vous occupez.";
+        currentOptions = [
+          { label: "Pour moi-même", hint: "Je veux connaître mon propre niveau de risque.", hasHint: true, onClick: () => this.setState({ forWhom: "moi", step: 1 }) },
+          { label: "Pour un proche", hint: "Parent, voisin·e, bénéficiaire… je réponds à sa place.", hasHint: true, onClick: () => this.setState({ forWhom: "proche", step: 1 }) }
+        ];
+      } else {
+        const q = this.QUESTIONS[s.step - 1];
+        questionTitle = q.title;
+        currentOptions = q.options.map((o, i) => ({
+          label: o.label,
+          hint: o.hint || "",
+          hasHint: !!o.hint,
+          onClick: () => {
+            const answers = s.answers.slice();
+            answers[s.step - 1] = i;
+            this.setState({ answers, step: s.step + 1 });
+          }
+        }));
+      }
+    }
+
+    const segments = Array.from({ length: 6 }, (_, i) => ({
+      color: i < s.step ? "#000091" : i === s.step ? "#6a6af4" : "#e3e3fd"
+    }));
+
+    let resultTitle = "", resultDesc = "", resultBg = "", resultColor = "", recos = [];
+    if (showResult) {
+      const r = this.computeResult();
+      recos = r.recos;
+      const intro = other ? "D'après les réponses données pour cette personne, " : "D'après vos réponses, ";
+      if (r.level === "faible") {
+        resultTitle = "Risque faible";
+        resultBg = "#dffee6"; resultColor = "#18753c";
+        resultDesc = intro + "les gestes de base suffisent dans la plupart des situations. Restez attentif aux signaux d'alerte pendant les épisodes de canicule.";
+      } else if (r.level === "modere") {
+        resultTitle = "Risque modéré";
+        resultBg = "#ffe9e6"; resultColor = "#b34000";
+        resultDesc = intro + "certains facteurs appellent une vigilance particulière en période de forte chaleur. Les recommandations ci-dessous sont à mettre en place dès maintenant.";
+      } else {
+        resultTitle = "Risque élevé";
+        resultBg = "#ffe9e9"; resultColor = "#ce0500";
+        resultDesc = intro + "plusieurs facteurs de vulnérabilité se cumulent. Appliquez ces recommandations dès maintenant" + (other ? " et partagez ce résultat avec la personne concernée et son entourage." : " et parlez-en à votre entourage.");
+      }
+    }
+
+    return {
+      // refs
+      diagRef: this.diagRef, gestesRef: this.gestesRef, aidantsRef: this.aidantsRef,
+      alerteRef: this.alerteRef, urgencesRef: this.urgencesRef,
+      // nav
+      navToDiag: () => this.scrollToRef(this.diagRef),
+      navToGestes: () => this.scrollToRef(this.gestesRef),
+      navToAidants: () => this.scrollToRef(this.aidantsRef),
+      navToAlerte: () => this.scrollToRef(this.alerteRef),
+      navToUrgences: () => this.scrollToRef(this.urgencesRef),
+      // hero & vigilance variants
+      heroChaleur: heroVariant === "chaleur",
+      heroClassique: heroVariant === "classique",
+      heroBleu: heroVariant === "bleu",
+      vigIsJaune: vigilance === "jaune",
+      vigIsOrange: vigilance === "orange",
+      vigIsRouge: vigilance === "rouge",
+      // diagnostic
+      showIntro, showStepper, showResult,
+      stepLabel: "Question " + (s.step + 1) + " sur 6",
+      questionTitle, questionSubtitle,
+      hasQuestionSubtitle: !!questionSubtitle,
+      currentOptions, segments,
+      canGoBack: s.step > 0,
+      goBack: () => this.setState({ step: Math.max(0, s.step - 1) }),
+      beginTest: () => this.setState({ started: true, step: 0, answers: [], forWhom: null }),
+      startFromHero: () => { this.setState({ started: true, step: 0, answers: [], forWhom: null }); this.scrollToRef(this.diagRef); },
+      startForProche: () => { this.setState({ started: true, step: 1, answers: [], forWhom: "proche" }); this.scrollToRef(this.diagRef); },
+      restartTest: () => this.setState({ started: true, step: 0, answers: [], forWhom: null }),
+      resultTitle, resultDesc, resultBg, resultColor, recos,
+      recosTitle: other ? "Recommandations pour cette personne" : "Vos recommandations",
+      // fiche réflexe
+      printFiche: () => window.print(),
+      // alerte email
+      email: s.email,
+      commune: s.commune,
+      onEmailChange: (e) => this.setState({ email: e.target.value, emailErr: "" }),
+      onCommuneChange: (e) => this.setState({ commune: e.target.value, communeErr: "" }),
+      emailErr: s.emailErr,
+      communeErr: s.communeErr,
+      hasEmailErr: !!s.emailErr,
+      hasCommuneErr: !!s.communeErr,
+      emailBorder: s.emailErr ? "#ce0500" : "#3a3a3a",
+      communeBorder: s.communeErr ? "#ce0500" : "#3a3a3a",
+      subscribed: s.subscribed,
+      notSubscribed: !s.subscribed,
+      onFieldKeyDown: (e) => { if (e.key === "Enter") { e.preventDefault(); this.doSubmitAlert(); } },
+      submitAlert: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        this.doSubmitAlert();
+      }
+    };
+  }
+
+  doSubmitAlert() {
+    const email = this.state.email.trim();
+    const commune = this.state.commune.trim();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    this.setState({
+      emailErr: email === "" ? "Veuillez renseigner votre adresse email." : emailOk ? "" : "Le format de l'adresse email n'est pas valide. Exemple : nom@domaine.fr",
+      communeErr: commune === "" ? "Veuillez renseigner votre commune." : "",
+      subscribed: emailOk && commune !== ""
+    });
+  }
+}
+</script>
+</body>
+</html>

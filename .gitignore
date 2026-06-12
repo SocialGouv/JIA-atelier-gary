@@ -1,0 +1,16 @@
+# Dépendances
+node_modules/
+
+# Build Vite
+dist/
+dist-ssr/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Divers
+.DS_Store
+*.local
+.vite/

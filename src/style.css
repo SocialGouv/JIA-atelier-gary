@@ -1,0 +1,85 @@
+/* Fortes chaleurs & canicules — styles de base.
+   Police Marianne (DSFR) + réinitialisation légère. Le rendu fidèle de la
+   maquette repose sur des styles en ligne dans le markup ; ce fichier porte
+   les fondations et les états interactifs (hover / focus). */
+
+@font-face {
+  font-family: "Marianne";
+  src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Marianne";
+  src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Regular_Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Marianne";
+  src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Marianne";
+  src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Marianne", arial, sans-serif;
+  color: #161616;
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+/* États interactifs (le focus visible est requis RGAA). */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #0a76f6;
+  outline-offset: 2px;
+}
+
+.cta-primary:hover {
+  background: #1212ff !important;
+}
+.cta-secondary:hover {
+  background: #f5f5fe !important;
+}
+.navlink:hover {
+  background: #f6f6f6 !important;
+}
+.navlink--urgence:hover {
+  background: #ffe9e9 !important;
+}
+.opt:hover {
+  border-color: #000091 !important;
+  background: #f5f5fe !important;
+}
+.linklike:hover {
+  color: #1212ff !important;
+}
+.footlink:hover {
+  text-decoration: underline !important;
+}
