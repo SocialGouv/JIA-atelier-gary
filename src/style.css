@@ -1,49 +1,85 @@
-/* Surcharges légères du projet.
-   Le DSFR (réinitialisation, typographie, composants) sera importé au ticket A2 ;
-   ce fichier ne contient pour l'instant que le strict nécessaire au squelette. */
+/* Fortes chaleurs & canicules — styles de base.
+   Police Marianne (DSFR) + réinitialisation légère. Le rendu fidèle de la
+   maquette repose sur des styles en ligne dans le markup ; ce fichier porte
+   les fondations et les états interactifs (hover / focus). */
 
-:root {
-  color-scheme: light;
+@font-face {
+  font-family: "Marianne";
+  src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Marianne";
+  src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Regular_Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Marianne";
+  src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Marianne";
+  src: url("https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.12.1/dist/fonts/Marianne-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, arial, sans-serif;
+  font-family: "Marianne", arial, sans-serif;
   color: #161616;
   background: #ffffff;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Placeholder provisoire — sera remplacé par le markup DSFR. */
-.placeholder {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 15vh 1.5rem;
-  text-align: center;
+button,
+input {
+  font-family: inherit;
 }
 
-.placeholder__kicker {
-  margin: 0 0 0.5rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #000091;
+/* États interactifs (le focus visible est requis RGAA). */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #0a76f6;
+  outline-offset: 2px;
 }
 
-.placeholder__title {
-  margin: 0 0 1rem;
-  font-size: 2rem;
-  line-height: 1.2;
+.cta-primary:hover {
+  background: #1212ff !important;
 }
-
-.placeholder__text {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #3a3a3a;
+.cta-secondary:hover {
+  background: #f5f5fe !important;
+}
+.navlink:hover {
+  background: #f6f6f6 !important;
+}
+.navlink--urgence:hover {
+  background: #ffe9e9 !important;
+}
+.opt:hover {
+  border-color: #000091 !important;
+  background: #f5f5fe !important;
+}
+.linklike:hover {
+  color: #1212ff !important;
+}
+.footlink:hover {
+  text-decoration: underline !important;
 }
